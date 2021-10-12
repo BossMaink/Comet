@@ -8,7 +8,11 @@ extern Comet::Application* Comet::CreateApplication();
 
 int main(int argc, char** argv)
 {
-	auto app = Comet::CreateApplication();
+	Comet::Log::Init();
+	CM_CORE_WARN("Initialized log");
+	CM_INFO("Hello World!");
+
+	auto* app = Comet::CreateApplication();
 	app->Run();
 	delete app;
 	return 0;

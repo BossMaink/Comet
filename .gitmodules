@@ -1,0 +1,3 @@
+[submodule "Comet/third-party/spdlog"]
+	path = Comet/third-party/spdlog
+	url = https://github.com/gabime/spdlog.git
