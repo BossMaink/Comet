@@ -2,8 +2,6 @@
 
 #include "Comet/Events/Event.h"
 
-#include <sstream>
-
 namespace Comet
 {
     class COMET_API KeyEvent : public Event

@@ -2,9 +2,6 @@
 
 #include "Comet/Core.h"
 
-#include <string>
-#include <functional>
-
 namespace Comet
 {
 

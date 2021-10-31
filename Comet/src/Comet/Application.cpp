@@ -1,3 +1,5 @@
+#include "cmpch.h"
+
 #include "Application.h"
 
 #include "Comet/Events/ApplicationEvent.h"

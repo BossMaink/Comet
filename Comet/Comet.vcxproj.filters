@@ -34,6 +34,7 @@
     <ClInclude Include="src\Comet\Log.h">
       <Filter>Comet</Filter>
     </ClInclude>
+    <ClInclude Include="src\cmpch.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Comet\Application.cpp">
@@ -42,5 +43,6 @@
     <ClCompile Include="src\Comet\Log.cpp">
       <Filter>Comet</Filter>
     </ClCompile>
+    <ClCompile Include="src\cmpch.cpp" />
   </ItemGroup>
 </Project>

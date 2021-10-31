@@ -7,6 +7,7 @@ namespace Comet {
 	{
 	public:
 		Application();
+
 		virtual ~Application();
 
 		void Run();
