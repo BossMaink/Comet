@@ -9,3 +9,5 @@
 #else
 	#error Comet only supports Windows!
 #endif
+
+#define BIT(X) (1 << X)
