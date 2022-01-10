@@ -10,6 +10,12 @@ workspace "Comet"
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
+-- Include directories relative to root folder (solution directory)
+IncludeDir = {}
+IncludeDir["GLFW"] = "Comet/third-party/GLFW/include"
+
+include "Comet/third-party/GLFW"
+
 project "Comet"
 	location "Comet"
 	kind "SharedLib"
@@ -30,7 +36,14 @@ project "Comet"
 	includedirs
 	{
 		"Comet/src",
-		"%{prj.name}/third-party/spdlog/include"
+		"%{prj.name}/third-party/spdlog/include",
+		"%{IncludeDir.GLFW}",
+	}
+
+	links
+	{
+		"GLFW",
+		"opengl32.lib",
 	}
 
 	filter "system:windows"
@@ -41,6 +54,7 @@ project "Comet"
 		defines
 		{
 			"CM_PLATFORM_WINDOWS",
+			"CM_ENABLE_ASSERTS",
 			"CM_BUILD_DLL",
 		}
 
@@ -51,14 +65,17 @@ project "Comet"
 
 	filter "configurations:Debug"
 		defines "CM_DEBUG"
+		buildoptions "/MDd"
 		symbols "On"
 	
 	filter "configurations:Release"
 		defines "CM_Release"
+		buildoptions "/MD"
 		optimize "On"
 
 	filter "configurations:Dist"
 		defines "CM_DIST"
+		buildoptions "/MD"
 		optimize "On"
 
 project "Stylized"
@@ -94,16 +111,20 @@ project "Stylized"
 		defines
 		{
 			"CM_PLATFORM_WINDOWS",
+			"CM_ENABLE_ASSERTS",
 		}
 
 	filter "configurations:Debug"
 		defines "CM_DEBUG"
+		buildoptions "/MDd"
 		symbols "On"
 	
 	filter "configurations:Release"
 		defines "CM_Release"
+		buildoptions "/MD"
 		optimize "On"
 
 	filter "configurations:Dist"
 		defines "CM_DIST"
+		buildoptions "/MD"
 		optimize "On"

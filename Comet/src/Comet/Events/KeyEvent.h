@@ -45,7 +45,7 @@ namespace Comet
         {
             std::stringstream ss;
             ss << "KeyReleaseEvent£º" << m_KeyCode;
-            return ss.str()
+            return ss.str();
         }
 
         EVENT_CLASS_TYPE(KeyReleased)

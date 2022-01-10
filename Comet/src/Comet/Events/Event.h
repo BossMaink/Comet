@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Comet/Core.h"
+#include "cmpch.h"
 
 namespace Comet
 {
@@ -60,7 +61,7 @@ namespace Comet
         {
             if (m_Event.GetEventType() == T::GetStaticType())
             {
-                m_Event.m_Handled = func(*(T*)&m_Event);
+                m_Event.Handled |= func(*dynamic_cast<T*>(&m_Event));
                 return true;
             }
             return false;

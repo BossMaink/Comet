@@ -10,4 +10,13 @@
 	#error Comet only supports Windows!
 #endif
 
+#ifdef CM_ENABLE_ASSERTS
+	#define CM_ASSERT(x, ...) {if(!(x)) { CM_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak();}}
+	#define CM_CORE_ASSERTS(x, ...) {if(!(x)) {CM_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak();}}
+#else
+	#define CM_ASSERT(x, ...)
+	#define CM_CORE_ASSERTS(x, ...)
+#endif // CM_ENABLE_ASSERTS
+
+
 #define BIT(X) (1 << X)
