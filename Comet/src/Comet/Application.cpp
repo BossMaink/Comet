@@ -4,7 +4,7 @@
 
 #include "Comet/Events/ApplicationEvent.h"
 
-#include <GLFW/glfw3.h>
+#include <glad/glad.h>
 
 #define BIND_EVENT_FN(x, y) std::bind(&x, y, std::placeholders::_1)
 

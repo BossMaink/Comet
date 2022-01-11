@@ -5,6 +5,8 @@
 #include "Comet/Events/KeyEvent.h"
 #include "Comet/Events/MouseEvent.h"
 
+#include <glad/glad.h>
+
 namespace Comet
 {
 	static bool s_GLFWInitialized = false;
@@ -47,6 +49,8 @@ namespace Comet
 
 		m_Window = glfwCreateWindow(static_cast<int>(props.Width), static_cast<int>(props.Height), m_Data.Title.c_str(), nullptr, nullptr);
 		glfwMakeContextCurrent(m_Window);
+		int status = gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress));
+		CM_CORE_ASSERTS(status, "Failed to initialize glad")
 		glfwSetWindowUserPointer(m_Window, &m_Data);
 		SetVSync(true);
 

@@ -13,8 +13,10 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 -- Include directories relative to root folder (solution directory)
 IncludeDir = {}
 IncludeDir["GLFW"] = "Comet/third-party/GLFW/include"
+IncludeDir["Glad"] = "Comet/third-party/Glad/include"
 
 include "Comet/third-party/GLFW"
+include "Comet/third-party/Glad"
 
 project "Comet"
 	location "Comet"
@@ -38,11 +40,13 @@ project "Comet"
 		"Comet/src",
 		"%{prj.name}/third-party/spdlog/include",
 		"%{IncludeDir.GLFW}",
+		"%{IncludeDir.Glad}"
 	}
 
 	links
 	{
 		"GLFW",
+		"Glad",
 		"opengl32.lib",
 	}
 
@@ -56,6 +60,7 @@ project "Comet"
 			"CM_PLATFORM_WINDOWS",
 			"CM_ENABLE_ASSERTS",
 			"CM_BUILD_DLL",
+			"GLFW_INCLUDE_NONE"
 		}
 
 		postbuildcommands
