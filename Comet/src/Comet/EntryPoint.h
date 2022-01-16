@@ -4,8 +4,6 @@
 
 #ifdef CM_PLATFORM_WINDOWS
 
-extern Comet::Application* Comet::CreateApplication();
-
 int main(int argc, char** argv)
 {
 	Comet::Log::Init();

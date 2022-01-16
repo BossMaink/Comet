@@ -22,6 +22,7 @@ public:
 	Stylized()
 	{
 		PushLayer(new ExampleLayer());
+		PushOverlay(new Comet::ImGuiLayer());
 	}
 
 	virtual ~Stylized()

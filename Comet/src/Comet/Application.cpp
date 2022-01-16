@@ -10,8 +10,13 @@
 
 namespace Comet 
 {
+	Application* Application::s_Instance = nullptr;
+
 	Application::Application()
 	{
+		CM_CORE_ASSERTS(!s_Instance, "Application already exists!");
+		s_Instance = this;
+
 		m_Window = std::unique_ptr<Window>(Window::Create());
 		m_Window->SetEventCallback(BIND_EVENT_FN(Application::OnEvent, this));
 	}
@@ -37,11 +42,13 @@ namespace Comet
 	void Application::PushLayer(Layer* layer)
 	{
 		m_LayerStack.PushLayer(layer);
+		layer->OnAttach();
 	}
 
 	void Application::PushOverlay(Layer* layer)
 	{
 		m_LayerStack.PushOverlay(layer);
+		layer->OnAttach();
 	}
 
 	bool Application::OnWindowClose(Event& e)
@@ -59,12 +66,13 @@ namespace Comet
 		{
 			glClearColor(1, 0, 1, 1);
 			glClear(GL_COLOR_BUFFER_BIT);
-			m_Window->OnUpdate();
 
 			for (Layer* layer: m_LayerStack)
 			{
 				layer->OnUpdate();
 			}
+
+			m_Window->OnUpdate();
 		}
 	}
 

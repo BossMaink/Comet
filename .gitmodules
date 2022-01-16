@@ -4,3 +4,6 @@
 [submodule "Comet/third-party/GLFW"]
 	path = Comet/third-party/GLFW
 	url = https://github.com/TheCherno/glfw.git
+[submodule "Comet/third-party/ImGui"]
+	path = Comet/third-party/ImGui
+	url = https://github.com/TheCherno/imgui.git

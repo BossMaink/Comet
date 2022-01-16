@@ -1,6 +1,6 @@
 workspace "Comet"
 	architecture "x64"
-
+	startproject "Stylized"
 	configurations
 	{
 		"Debug",
@@ -14,9 +14,14 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 IncludeDir = {}
 IncludeDir["GLFW"] = "Comet/third-party/GLFW/include"
 IncludeDir["Glad"] = "Comet/third-party/Glad/include"
+IncludeDir["ImGui"] = "Comet/third-party/ImGui"
 
-include "Comet/third-party/GLFW"
-include "Comet/third-party/Glad"
+group "Dependencies"
+	include "Comet/third-party/GLFW"
+	include "Comet/third-party/Glad"
+	include "Comet/third-party/ImGui"
+
+group ""
 
 project "Comet"
 	location "Comet"
@@ -40,7 +45,8 @@ project "Comet"
 		"Comet/src",
 		"%{prj.name}/third-party/spdlog/include",
 		"%{IncludeDir.GLFW}",
-		"%{IncludeDir.Glad}"
+		"%{IncludeDir.Glad}",
+		"%{IncludeDir.ImGui}"
 	}
 
 	links
@@ -48,11 +54,12 @@ project "Comet"
 		"GLFW",
 		"Glad",
 		"opengl32.lib",
+		"ImGui"
 	}
 
 	filter "system:windows"
 		cppdialect "C++17"
-		staticruntime "On"
+		staticruntime "Off"
 		systemversion "latest"
 
 		defines
@@ -60,27 +67,28 @@ project "Comet"
 			"CM_PLATFORM_WINDOWS",
 			"CM_ENABLE_ASSERTS",
 			"CM_BUILD_DLL",
-			"GLFW_INCLUDE_NONE"
+			"GLFW_INCLUDE_NONE",
+			"IMGUI_IMPL_OPENGL_LOADER_CUSTOM"
 		}
 
 		postbuildcommands
 		{
-			("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/Stylized")
+			("{COPY} %{cfg.buildtarget.relpath} \"../bin/" .. outputdir .. "/Stylized\"")
 		}
 
 	filter "configurations:Debug"
 		defines "CM_DEBUG"
-		buildoptions "/MDd"
+		runtime "Debug"
 		symbols "On"
 	
 	filter "configurations:Release"
 		defines "CM_Release"
-		buildoptions "/MD"
+		runtime "Release"
 		optimize "On"
 
 	filter "configurations:Dist"
 		defines "CM_DIST"
-		buildoptions "/MD"
+		runtime "Release"
 		optimize "On"
 
 project "Stylized"
@@ -110,7 +118,7 @@ project "Stylized"
 
 	filter "system:windows"
 		cppdialect "C++17"
-		staticruntime "On"
+		staticruntime "Off"
 		systemversion "latest"
 
 		defines
@@ -121,15 +129,15 @@ project "Stylized"
 
 	filter "configurations:Debug"
 		defines "CM_DEBUG"
-		buildoptions "/MDd"
+		runtime "Debug"
 		symbols "On"
 	
 	filter "configurations:Release"
 		defines "CM_Release"
-		buildoptions "/MD"
+		runtime "Release"
 		optimize "On"
 
 	filter "configurations:Dist"
 		defines "CM_DIST"
-		buildoptions "/MD"
+		runtime "Release"
 		optimize "On"
