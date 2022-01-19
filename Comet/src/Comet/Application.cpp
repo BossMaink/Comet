@@ -6,8 +6,6 @@
 
 #include <glad/glad.h>
 
-#define BIND_EVENT_FN(x, y) std::bind(&x, y, std::placeholders::_1)
-
 namespace Comet 
 {
 	Application* Application::s_Instance = nullptr;
@@ -33,9 +31,9 @@ namespace Comet
 
 		for (auto it = m_LayerStack.end(); it != m_LayerStack.begin();)
 		{
-			(*--it)->OnEvent(e);
 			if (e.Handled)
 				break;
+			(*--it)->OnEvent(e);
 		}
 	}
 

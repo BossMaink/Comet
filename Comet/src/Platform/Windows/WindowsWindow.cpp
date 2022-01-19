@@ -99,6 +99,14 @@ namespace Comet
 				}
 			});
 
+		glfwSetCharCallback(m_Window, [](GLFWwindow* window, unsigned int keycode)
+			{
+				WindowData& Data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
+
+				KeyTypedEvent event(keycode);
+				Data.EventCallback(event);
+			});
+
 		glfwSetMouseButtonCallback(m_Window, [](GLFWwindow* window, int button, int action, int mod)
 			{
 				WindowData& Data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));

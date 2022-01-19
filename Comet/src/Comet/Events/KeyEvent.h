@@ -11,7 +11,7 @@ namespace Comet
         
         EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput)
     protected:
-    KeyEvent(int keycode) : m_KeyCode(keycode) {}
+        KeyEvent(int keycode) : m_KeyCode(keycode) {}
 
     int m_KeyCode;
     };
@@ -50,4 +50,20 @@ namespace Comet
 
         EVENT_CLASS_TYPE(KeyReleased)
     };
+
+	class COMET_API KeyTypedEvent : public KeyEvent
+	{
+	public:
+		KeyTypedEvent(int keycode)
+			: KeyEvent(keycode) {}
+
+		std::string ToString() const override
+		{
+			std::stringstream ss;
+			ss << "KeyTypedEvent: " << m_KeyCode ;
+			return ss.str();
+		}
+
+		EVENT_CLASS_TYPE(KeyTyped)
+	};
 }

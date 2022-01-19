@@ -20,3 +20,5 @@
 
 
 #define BIT(X) (1 << X)
+
+#define BIND_EVENT_FN(x, y) std::bind(&x, y, std::placeholders::_1)
