@@ -29,7 +29,7 @@ namespace Comet
 	{
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(Application::OnWindowClose, this));
-		CM_CORE_TRACE("{0}", e);
+		//CM_CORE_TRACE("{0}", e);
 
 		for (auto it = m_LayerStack.end(); it != m_LayerStack.begin();)
 		{
@@ -73,7 +73,7 @@ namespace Comet
 			}
 
 			auto [x, y] = Input::GetMousePosition();
-			CM_CORE_TRACE("{0}, {1}", x, y);
+			//CM_CORE_TRACE("{0}, {1}", x, y);
 
 			m_Window->OnUpdate();
 		}

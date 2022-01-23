@@ -71,6 +71,8 @@
       <Filter>Platform\Windows</Filter>
     </ClInclude>
     <ClInclude Include="src\cmpch.h" />
+    <ClInclude Include="src\Comet\KeyCodes.h" />
+    <ClInclude Include="src\Comet\MouseButtonCodes.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Comet\Application.cpp">

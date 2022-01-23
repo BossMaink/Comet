@@ -159,9 +159,11 @@
     <ClInclude Include="src\Comet\Events\MouseEvent.h" />
     <ClInclude Include="src\Comet\ImGui\ImGuiLayer.h" />
     <ClInclude Include="src\Comet\Input.h" />
+    <ClInclude Include="src\Comet\KeyCodes.h" />
     <ClInclude Include="src\Comet\Layer.h" />
     <ClInclude Include="src\Comet\LayerStack.h" />
     <ClInclude Include="src\Comet\Log.h" />
+    <ClInclude Include="src\Comet\MouseButtonCodes.h" />
     <ClInclude Include="src\Comet\Window.h" />
     <ClInclude Include="src\Platform\OpenGL\ImGuiOpenGLRenderer.h" />
     <ClInclude Include="src\Platform\Windows\WindowsInput.h" />

@@ -7,12 +7,23 @@ public:
 
 	void OnUpdate() override
 	{
-		CM_INFO("ExampleLayer Update");
+		if (Comet::Input::IsKeyPressed(CM_KEY_TAB))
+		{
+			CM_TRACE("Tab Key is pressed (poll)");
+		}
 	}
 
 	void OnEvent(Comet::Event& e) override
 	{
-		CM_TRACE("{0}", e);
+		if (e.GetEventType() == Comet::EventType::KeyPressed)
+		{
+			Comet::KeyPressedEvent& KeyPressedEvent = (Comet::KeyPressedEvent&) e;
+			if (KeyPressedEvent.GetKeyCode() == CM_KEY_TAB)
+			{
+				CM_TRACE("Tab Key is pressed (Event)");
+			}
+			CM_TRACE("{0}", (char)KeyPressedEvent.GetKeyCode());
+		}
 	}
 };
 
