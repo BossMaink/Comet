@@ -15,6 +15,7 @@ IncludeDir = {}
 IncludeDir["GLFW"] = "Comet/third-party/GLFW/include"
 IncludeDir["Glad"] = "Comet/third-party/Glad/include"
 IncludeDir["ImGui"] = "Comet/third-party/ImGui"
+IncludeDir["glm"] = "Comet/third-party/glm"
 
 group "Dependencies"
 	include "Comet/third-party/GLFW"
@@ -38,6 +39,8 @@ project "Comet"
 	{
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.cpp",
+		"%{prj.name}/third-party/glm/glm/**.hpp",
+		"%{prj.name}/third-party/glm/glm/**.inl"
 	}
 
 	includedirs
@@ -46,7 +49,8 @@ project "Comet"
 		"%{prj.name}/third-party/spdlog/include",
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.Glad}",
-		"%{IncludeDir.ImGui}"
+		"%{IncludeDir.ImGui}",
+		"%{IncludeDir.glm}"
 	}
 
 	links
@@ -108,7 +112,8 @@ project "Stylized"
 	includedirs
 	{
 		"Comet/third-party/spdlog/include",
-		"Comet/src"
+		"Comet/src",
+		"%{IncludeDir.glm}"
 	}
 
 	links

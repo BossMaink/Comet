@@ -7,3 +7,6 @@
 [submodule "Comet/third-party/ImGui"]
 	path = Comet/third-party/ImGui
 	url = https://github.com/TheCherno/imgui.git
+[submodule "Comet/third-party/glm"]
+	path = Comet/third-party/glm
+	url = https://github.com/g-truc/glm.git
