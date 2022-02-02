@@ -1,11 +1,15 @@
 #pragma once
 
 #ifdef CM_PLATFORM_WINDOWS
+#if CM_DYNAMIC_LINK
 	#ifdef CM_BUILD_DLL
 		#define COMET_API __declspec(dllexport)
 	#else
 		#define COMET_API __declspec(dllimport)
 	#endif
+#else
+	#define COMET_API
+#endif
 #else
 	#error Comet only supports Windows!
 #endif

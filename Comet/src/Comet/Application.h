@@ -6,6 +6,8 @@
 #include "Comet/Events/Event.h"
 #include "Comet/Events/ApplicationEvent.h"
 
+#include "Comet/ImGui/ImGuiLayer.h"
+
 namespace Comet {
 	class COMET_API Application
 	{
@@ -28,6 +30,8 @@ namespace Comet {
 		bool OnWindowClose(Event& e);
 
 		std::unique_ptr<Window> m_Window;
+
+		ImGuiLayer* m_ImGuiLayer = nullptr;;
 
 		bool m_Running = true;
 		LayerStack m_LayerStack;

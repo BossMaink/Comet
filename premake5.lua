@@ -26,8 +26,10 @@ group ""
 
 project "Comet"
 	location "Comet"
-	kind "SharedLib"
+	kind "StaticLib"
 	language "C++"
+	cppdialect "C++17"
+	staticruntime "on"
 
 	targetdir ("bin/".. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/".. outputdir .. "/%{prj.name}")
@@ -53,6 +55,11 @@ project "Comet"
 		"%{IncludeDir.glm}"
 	}
 
+	defines
+	{
+		"_CRT_SECURE_NO_WARNINGS"
+	}
+
 	links
 	{
 		"GLFW",
@@ -62,8 +69,6 @@ project "Comet"
 	}
 
 	filter "system:windows"
-		cppdialect "C++17"
-		staticruntime "Off"
 		systemversion "latest"
 
 		defines
@@ -72,33 +77,34 @@ project "Comet"
 			"CM_ENABLE_ASSERTS",
 			"CM_BUILD_DLL",
 			"GLFW_INCLUDE_NONE",
-			"IMGUI_IMPL_OPENGL_LOADER_CUSTOM"
 		}
 
-		postbuildcommands
-		{
-			("{COPY} %{cfg.buildtarget.relpath} \"../bin/" .. outputdir .. "/Stylized\"")
-		}
+		-- postbuildcommands
+		-- {
+		-- 	("{COPY} %{cfg.buildtarget.relpath} \"../bin/" .. outputdir .. "/Stylized\"")
+		-- }
 
 	filter "configurations:Debug"
 		defines "CM_DEBUG"
 		runtime "Debug"
-		symbols "On"
+		symbols "on"
 	
 	filter "configurations:Release"
 		defines "CM_Release"
 		runtime "Release"
-		optimize "On"
+		optimize "on"
 
 	filter "configurations:Dist"
 		defines "CM_DIST"
 		runtime "Release"
-		optimize "On"
+		optimize "on"
 
 project "Stylized"
 	location "Stylized"
 	kind "ConsoleApp"	
 	language "C++"
+	cppdialect "C++17"
+	staticruntime "on"
 
 	targetdir ("bin/".. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/".. outputdir .. "/%{prj.name}")
@@ -113,6 +119,7 @@ project "Stylized"
 	{
 		"Comet/third-party/spdlog/include",
 		"Comet/src",
+		"Comet/third-party",
 		"%{IncludeDir.glm}"
 	}
 
@@ -122,8 +129,6 @@ project "Stylized"
 	}
 
 	filter "system:windows"
-		cppdialect "C++17"
-		staticruntime "Off"
 		systemversion "latest"
 
 		defines
@@ -135,14 +140,14 @@ project "Stylized"
 	filter "configurations:Debug"
 		defines "CM_DEBUG"
 		runtime "Debug"
-		symbols "On"
+		symbols "on"
 	
 	filter "configurations:Release"
 		defines "CM_Release"
 		runtime "Release"
-		optimize "On"
+		optimize "on"
 
 	filter "configurations:Dist"
 		defines "CM_DIST"
 		runtime "Release"
-		optimize "On"
+		optimize "on"
