@@ -155,7 +155,9 @@
     <ClInclude Include="src\Comet\LayerStack.h" />
     <ClInclude Include="src\Comet\Log.h" />
     <ClInclude Include="src\Comet\MouseButtonCodes.h" />
+    <ClInclude Include="src\Comet\Renderer\GraphicsContext.h" />
     <ClInclude Include="src\Comet\Window.h" />
+    <ClInclude Include="src\Platform\OpenGL\OpenGLContext.h" />
     <ClInclude Include="src\Platform\Windows\WindowsInput.h" />
     <ClInclude Include="src\Platform\Windows\WindowsWindow.h" />
     <ClInclude Include="src\cmpch.h" />
@@ -582,6 +584,7 @@
     <ClCompile Include="src\Comet\Layer.cpp" />
     <ClCompile Include="src\Comet\LayerStack.cpp" />
     <ClCompile Include="src\Comet\Log.cpp" />
+    <ClCompile Include="src\Platform\OpenGL\OpenGLContext.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsInput.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp" />
     <ClCompile Include="src\cmpch.cpp">

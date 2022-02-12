@@ -5,7 +5,7 @@
 #include "Comet/Events/KeyEvent.h"
 #include "Comet/Events/MouseEvent.h"
 
-#include <glad/glad.h>
+#include "Platform/OpenGL/OpenGLContext.h"
 
 namespace Comet
 {
@@ -48,9 +48,8 @@ namespace Comet
 		}
 
 		m_Window = glfwCreateWindow(static_cast<int>(props.Width), static_cast<int>(props.Height), m_Data.Title.c_str(), nullptr, nullptr);
-		glfwMakeContextCurrent(m_Window);
-		int status = gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress));
-		CM_CORE_ASSERTS(status, "Failed to initialize glad")
+		m_Context = new	OpenGLContext(m_Window);
+		m_Context->Init();
 		glfwSetWindowUserPointer(m_Window, &m_Data);
 		SetVSync(true);
 
@@ -152,8 +151,8 @@ namespace Comet
 
 	void WindowsWindow::OnUpdate()
 	{
+		m_Context->SwapBuffers();
 		glfwPollEvents();
-		glfwSwapBuffers(m_Window);
 	}
 
 	void WindowsWindow::SetVSync(bool enabled)
