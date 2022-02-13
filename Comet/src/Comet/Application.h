@@ -8,6 +8,9 @@
 
 #include "Comet/ImGui/ImGuiLayer.h"
 
+#include "Comet/Renderer/Shader.h"
+#include "Comet/Renderer/Buffer.h"
+
 namespace Comet {
 	class COMET_API Application
 	{
@@ -35,6 +38,11 @@ namespace Comet {
 
 		bool m_Running = true;
 		LayerStack m_LayerStack;
+
+		uint32_t m_VertexArray;
+		std::unique_ptr<Shader> m_Shader;
+		std::unique_ptr<VertexBuffer> m_VertexBuffer;
+		std::unique_ptr<IndexBuffer> m_IndexBuffer;
 
 	private:
 		static Application* s_Instance;

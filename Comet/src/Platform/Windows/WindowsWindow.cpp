@@ -42,7 +42,7 @@ namespace Comet
 		if (!s_GLFWInitialized)
 		{
 			int success = glfwInit();
-			CM_CORE_ASSERTS(success, "Could not initialize GLFW!");
+			CM_CORE_ASSERT(success, "Could not initialize GLFW!");
 			glfwSetErrorCallback(GLFWErrorCallback);
 			s_GLFWInitialized = true;
 		}

@@ -14,7 +14,7 @@ namespace Comet
 
 	Application::Application()
 	{
-		CM_CORE_ASSERTS(!s_Instance, "Application already exists!");
+		CM_CORE_ASSERT(!s_Instance, "Application already exists!");
 		s_Instance = this;
 
 		m_Window = std::unique_ptr<Window>(Window::Create());
@@ -22,6 +22,33 @@ namespace Comet
 
 		m_ImGuiLayer = new ImGuiLayer();
 		PushOverlay(m_ImGuiLayer);
+
+		std::string vertexShaderSource = R"(
+			#version 410 core
+			layout (location = 0) in vec3 aPos;
+			layout (location = 1) in vec3 aColor;
+
+			out vec3 outColor;
+			void main()
+			{
+				gl_Position = vec4(aPos, 1.0f);
+				outColor = aColor;
+			}
+		)";
+
+		std::string FragmentShaderSource = R"(
+			#version 410 core
+
+			out vec4 FragColor;
+			in vec3 outColor;
+
+			void main()
+			{
+				FragColor = vec4(outColor, 1.0f);
+			} 
+		)";
+
+		m_Shader.reset(new Shader(vertexShaderSource, FragmentShaderSource));
 	}
 
 	Application::~Application()
@@ -63,138 +90,39 @@ namespace Comet
 		WindowResizeEvent e(1280, 720);
 		CM_TRACE(e);
 
-		std::string vertexShaderSource = R"(
-			#version 410 core
-			layout (location = 0) in vec3 aPos;
-			void main()
-			{
-				gl_Position = vec4(aPos, 1);
-			}
-		)";
+		glGenVertexArrays(1, &m_VertexArray);
+		glBindVertexArray(m_VertexArray);
 
-		std::string FragmentShaderSource = R"(
-			#version 410 core
-			out vec4 FragColor;
-
-			void main()
-			{
-				FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);
-			} 
-		)";
-
-		uint32_t vertexShader = glCreateShader(GL_VERTEX_SHADER);
-		const GLchar* source = (const GLchar*)vertexShaderSource.c_str();
-		glShaderSource(vertexShader, 1, &source, NULL);
-		glCompileShader(vertexShader);
-
-		int32_t success = 1;
-		glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-
-		if (!success)
-		{
-			GLint maxLength = 0;
-			glGetShaderiv(vertexShader, GL_INFO_LOG_LENGTH, &maxLength);
-
-			// The maxLength includes the NULL character
-			std::vector<GLchar> infoLog(maxLength);
-			glGetShaderInfoLog(vertexShader, maxLength, &maxLength, &infoLog[0]);
-
-			// We don't need the shader anymore.
-			glDeleteShader(vertexShader);
-
-			CM_CORE_ERROR("{0}", infoLog.data());
-			CM_CORE_ASSERTS(false, "Vertex shader compilation failure!");
-		}
-
-		uint32_t fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-		source = (const GLchar*)FragmentShaderSource.c_str();
-		glShaderSource(fragmentShader, 1, &source, NULL);
-		glCompileShader(fragmentShader);
-
-		glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-
-		if (!success)
-		{
-			GLint maxLength = 0;
-			glGetShaderiv(fragmentShader, GL_INFO_LOG_LENGTH, &maxLength);
-
-			// The maxLength includes the NULL character
-			std::vector<GLchar> infoLog(maxLength);
-			glGetShaderInfoLog(fragmentShader, maxLength, &maxLength, &infoLog[0]);
-
-			// We don't need the shader anymore.
-			glDeleteShader(fragmentShader);
-			// Either of them. Don't leak shaders.
-			glDeleteShader(vertexShader);
-
-			CM_CORE_ERROR("{0}", infoLog.data());
-			CM_CORE_ASSERTS(false, "Fragment shader compilation failure!");
-			return;
-		}
-
-		uint32_t shaderProgram = glCreateProgram();
-		glAttachShader(shaderProgram, vertexShader);
-		glAttachShader(shaderProgram, fragmentShader);
-		glLinkProgram(shaderProgram);
-
-		glDeleteShader(fragmentShader);
-		glDeleteShader(vertexShader);
-
-		glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-		if (!success)
-		{
-			GLint maxLength = 0;
-			glGetProgramiv(fragmentShader, GL_INFO_LOG_LENGTH, &maxLength);
-
-			// The maxLength includes the NULL character
-			std::vector<GLchar> infoLog(maxLength);
-			glGetProgramInfoLog(fragmentShader, maxLength, &maxLength, &infoLog[0]);
-
-			glDeleteProgram(shaderProgram);
-
-			CM_CORE_ERROR("{0}", infoLog.data());
-			CM_CORE_ASSERTS(false, "Program link failure!");
-			return;
-		}
-		uint32_t VAO;
-		glGenVertexArrays(1, &VAO);
-		glBindVertexArray(VAO);
-
-		std::vector<float> vertices = {
-			0.5f, 0.5f, 0.0f,   // ÓÒÉÏ½Ç
-			0.5f, -0.5f, 0.0f,  // ÓÒÏÂ½Ç
-			-0.5f, -0.5f, 0.0f, // ×óÏÂ½Ç
-			-0.5f, 0.5f, 0.0f   // ×óÉÏ½Ç
+		float vertices[] = {
+			 0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,   
+			-0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,   
+			 0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f    
 		};
 
 		uint32_t indices[] = {
-			0, 1, 3,
-			1, 2, 3
+			0, 1, 2
 		};
 
-		uint32_t VBO;
-		glGenBuffers(1, &VBO);
+		m_VertexBuffer.reset(VertexBuffer::Create(vertices, sizeof(vertices)));
 
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), (const void*)&vertices[0], GL_STATIC_DRAW);
+		m_IndexBuffer.reset(IndexBuffer::Create(indices, sizeof(indices)/ sizeof(uint32_t)));
 
-		unsigned int EBO;
-		glGenBuffers(1, &EBO);
 
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), (const void*)indices, GL_STATIC_DRAW);
-
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
 		glEnableVertexAttribArray(0);
 
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+		glEnableVertexAttribArray(1);
+
+		m_Shader->Bind();
 		while (m_Running)
 		{
 			glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT);
 
-			glUseProgram(shaderProgram);
-			glBindVertexArray(VAO);
-			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+			glBindVertexArray(m_VertexArray);
+			glDrawElements(GL_TRIANGLES, m_IndexBuffer->GetCount(), GL_UNSIGNED_INT, 0);
+			//glDrawArrays(GL_TRIANGLES, 0, 3);
 			glBindVertexArray(0);
 			//for (Layer* layer: m_LayerStack)
 			//{
