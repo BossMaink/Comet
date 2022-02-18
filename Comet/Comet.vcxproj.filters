@@ -1361,9 +1361,6 @@
     <ClCompile Include="src\Comet\ImGui\ImGuiLayer.cpp">
       <Filter>src\Comet\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="src\Comet\Layer.cpp">
-      <Filter>src\Comet</Filter>
-    </ClCompile>
     <ClCompile Include="src\Comet\LayerStack.cpp">
       <Filter>src\Comet</Filter>
     </ClCompile>

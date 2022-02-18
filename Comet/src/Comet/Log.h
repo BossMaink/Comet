@@ -26,11 +26,11 @@ namespace Comet {
 #define CM_CORE_INFO(...)     ::Comet::Log::GetCoreLogger()->info(__VA_ARGS__)
 #define CM_CORE_WARN(...)     ::Comet::Log::GetCoreLogger()->warn(__VA_ARGS__)
 #define CM_CORE_ERROR(...)    ::Comet::Log::GetCoreLogger()->error(__VA_ARGS__)
-#define CM_CORE_FATAL(...)    ::Comet::Log::GetCoreLogger()->critical(__VA_ARGS__)
+#define CM_CORE_CRITICAL(...) ::Comet::Log::GetCoreLogger()->critical(__VA_ARGS__)
 
 //Client log macros
 #define CM_TRACE(...)    ::Comet::Log::GetClientLogger()->trace(__VA_ARGS__)
 #define CM_INFO(...)     ::Comet::Log::GetClientLogger()->info(__VA_ARGS__)
 #define CM_WARN(...)     ::Comet::Log::GetClientLogger()->warn(__VA_ARGS__)
 #define CM_ERROR(...)    ::Comet::Log::GetClientLogger()->error(__VA_ARGS__)
-#define CM_FATAL(...)    ::Comet::Log::GetClientLogger()->critical(__VA_ARGS__)
+#define CM_CRITICAL(...) ::Comet::Log::GetClientLogger()->critical(__VA_ARGS__)

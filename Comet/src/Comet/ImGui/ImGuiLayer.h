@@ -7,7 +7,7 @@ namespace Comet {
 	{
 	public:
 		ImGuiLayer();
-		~ImGuiLayer();
+		~ImGuiLayer() = default;
 
 		void Begin();
 		void End();

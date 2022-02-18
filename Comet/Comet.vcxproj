@@ -585,7 +585,6 @@
     <ClCompile Include="src\Comet\Application.cpp" />
     <ClCompile Include="src\Comet\ImGui\ImGuiBuild.cpp" />
     <ClCompile Include="src\Comet\ImGui\ImGuiLayer.cpp" />
-    <ClCompile Include="src\Comet\Layer.cpp" />
     <ClCompile Include="src\Comet\LayerStack.cpp" />
     <ClCompile Include="src\Comet\Log.cpp" />
     <ClCompile Include="src\Comet\Renderer\Buffer.cpp" />

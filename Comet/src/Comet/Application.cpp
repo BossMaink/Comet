@@ -12,6 +12,27 @@ namespace Comet
 {
 	Application* Application::s_Instance = nullptr;
 
+	static GLenum ShaderDataTypeToOpenGLBaseType(ShaderDataType type)
+	{
+		switch (type)
+		{
+		case Comet::ShaderDataType::Float:    return GL_FLOAT;
+		case Comet::ShaderDataType::Float2:   return GL_FLOAT;
+		case Comet::ShaderDataType::Float3:   return GL_FLOAT;
+		case Comet::ShaderDataType::Float4:   return GL_FLOAT;
+		case Comet::ShaderDataType::Mat3:     return GL_FLOAT;
+		case Comet::ShaderDataType::Mat4:     return GL_FLOAT;
+		case Comet::ShaderDataType::Int:      return GL_INT;
+		case Comet::ShaderDataType::Int2:     return GL_INT;
+		case Comet::ShaderDataType::Int3:     return GL_INT;
+		case Comet::ShaderDataType::Int4:     return GL_INT;
+		case Comet::ShaderDataType::Bool:     return GL_BOOL;
+		}
+
+		CM_CORE_ASSERT(false, "Unknown ShaderDataType!");
+		return 0;
+	}
+
 	Application::Application()
 	{
 		CM_CORE_ASSERT(!s_Instance, "Application already exists!");
@@ -49,10 +70,6 @@ namespace Comet
 		)";
 
 		m_Shader.reset(new Shader(vertexShaderSource, FragmentShaderSource));
-	}
-
-	Application::~Application()
-	{
 	}
 
 	void Application::OnEvent(Event& e)
@@ -99,20 +116,35 @@ namespace Comet
 			 0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f    
 		};
 
+		m_VertexBuffer.reset(VertexBuffer::Create(vertices, sizeof(vertices)));
+		
+		{
+			BufferLayout layout = {
+				{ShaderDataType::Float3, "a_Position"},
+				{ShaderDataType::Float3, "a_Color"}
+			};
+
+			m_VertexBuffer->SetLayout(layout);
+		}
+
+		uint32_t index = 0;
+		const auto& layout = m_VertexBuffer->GetLayout();
+		for (const auto& element : layout)
+		{
+			glVertexAttribPointer(index,
+				element.GetComponentCount(),
+				ShaderDataTypeToOpenGLBaseType(element.Type),
+				element.Normalized ? GL_TRUE : GL_FALSE,
+				layout.GetStride(),
+				(const void*)element.Offset);
+			glEnableVertexAttribArray(index);
+			++index;
+		}
+
 		uint32_t indices[] = {
 			0, 1, 2
 		};
-
-		m_VertexBuffer.reset(VertexBuffer::Create(vertices, sizeof(vertices)));
-
 		m_IndexBuffer.reset(IndexBuffer::Create(indices, sizeof(indices)/ sizeof(uint32_t)));
-
-
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-		glEnableVertexAttribArray(0);
-
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
-		glEnableVertexAttribArray(1);
 
 		m_Shader->Bind();
 		while (m_Running)

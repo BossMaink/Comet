@@ -9,7 +9,7 @@ namespace Comet
 	{
 	public:
 		Layer(const std::string& name = "Layer") : m_DebugName(name) {}
-		virtual ~Layer();
+		virtual ~Layer() = default;
 
 		virtual void OnAttach() {}
 		virtual void OnDetach() {}
