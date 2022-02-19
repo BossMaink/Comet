@@ -4,9 +4,9 @@
 
 #include "Comet/Events/ApplicationEvent.h"
 
-#include "Input.h"
+#include "Comet/Renderer/Renderer.h"
 
-#include <glad/glad.h>
+#include "Input.h"
 
 namespace Comet 
 {
@@ -115,11 +115,13 @@ namespace Comet
 		m_Shader->Bind();
 		while (m_Running)
 		{
-			glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-			glClear(GL_COLOR_BUFFER_BIT);
+			RenderCommand::SetClearColor({ 0.2f, 0.3f, 0.3f, 1.0f });
+			RenderCommand::Clear();
 
+			Renderer::BeginScene();
 			m_VertexArray->Bind();
-			glDrawElements(GL_TRIANGLES, m_VertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, 0);
+			Renderer::Submit(m_VertexArray);
+			Renderer::EndScene();
 			//glDrawArrays(GL_TRIANGLES, 0, 3);
 			//for (Layer* layer: m_LayerStack)
 			//{
