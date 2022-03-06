@@ -13,6 +13,7 @@ namespace Comet
 	Application* Application::s_Instance = nullptr;
 
 	Application::Application()
+		: m_Camera(-1.6f, 1.6f, -0.9f, 0.9f)
 	{
 		CM_CORE_ASSERT(!s_Instance, "Application already exists!");
 		s_Instance = this;
@@ -28,10 +29,12 @@ namespace Comet
 			layout (location = 0) in vec3 aPos;
 			layout (location = 1) in vec3 aColor;
 
+			uniform mat4 u_ViewProjection;
+
 			out vec3 outColor;
 			void main()
 			{
-				gl_Position = vec4(aPos, 1.0f);
+				gl_Position = u_ViewProjection * vec4(aPos, 1.0f);
 				outColor = aColor;
 			}
 		)";
@@ -112,15 +115,16 @@ namespace Comet
 		WindowResizeEvent e(1280, 720);
 		CM_TRACE(e);
 
-		m_Shader->Bind();
 		while (m_Running)
 		{
 			RenderCommand::SetClearColor({ 0.2f, 0.3f, 0.3f, 1.0f });
 			RenderCommand::Clear();
 
-			Renderer::BeginScene();
-			m_VertexArray->Bind();
-			Renderer::Submit(m_VertexArray);
+			m_Camera.SetPosition({ 0.f, 0.f, 0.f });
+			m_Camera.SetRotation(90.f);
+
+			Renderer::BeginScene(m_Camera);
+			Renderer::Submit(m_Shader, m_VertexArray);
 			Renderer::EndScene();
 			//glDrawArrays(GL_TRIANGLES, 0, 3);
 			//for (Layer* layer: m_LayerStack)

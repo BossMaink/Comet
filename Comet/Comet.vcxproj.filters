@@ -1355,6 +1355,7 @@
     <ClInclude Include="src\Comet\Renderer\RendererAPI.h" />
     <ClInclude Include="src\Comet\Renderer\RenderCommand.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLRendererAPI.h" />
+    <ClInclude Include="src\Comet\Renderer\OrthographicCamera.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Comet\Application.cpp">
@@ -1391,5 +1392,6 @@
     <ClCompile Include="src\Comet\Renderer\RendererAPI.cpp" />
     <ClCompile Include="src\Comet\Renderer\RenderCommand.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLRendererAPI.cpp" />
+    <ClCompile Include="src\Comet\Renderer\OrthographicCamera.cpp" />
   </ItemGroup>
 </Project>

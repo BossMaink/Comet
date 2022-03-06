@@ -157,6 +157,7 @@
     <ClInclude Include="src\Comet\MouseButtonCodes.h" />
     <ClInclude Include="src\Comet\Renderer\Buffer.h" />
     <ClInclude Include="src\Comet\Renderer\GraphicsContext.h" />
+    <ClInclude Include="src\Comet\Renderer\OrthographicCamera.h" />
     <ClInclude Include="src\Comet\Renderer\RendererAPI.h" />
     <ClInclude Include="src\Comet\Renderer\Renderer.h" />
     <ClInclude Include="src\Comet\Renderer\RenderCommand.h" />
@@ -593,6 +594,7 @@
     <ClCompile Include="src\Comet\LayerStack.cpp" />
     <ClCompile Include="src\Comet\Log.cpp" />
     <ClCompile Include="src\Comet\Renderer\Buffer.cpp" />
+    <ClCompile Include="src\Comet\Renderer\OrthographicCamera.cpp" />
     <ClCompile Include="src\Comet\Renderer\RendererAPI.cpp" />
     <ClCompile Include="src\Comet\Renderer\Renderer.cpp" />
     <ClCompile Include="src\Comet\Renderer\RenderCommand.cpp" />

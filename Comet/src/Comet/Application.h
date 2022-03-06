@@ -12,6 +12,8 @@
 #include "Comet/Renderer/Buffer.h"
 #include "Comet/Renderer/VertexArray.h"
 
+#include "Comet/Renderer/OrthographicCamera.h"
+
 namespace Comet {
 	class COMET_API Application
 	{
@@ -45,6 +47,8 @@ namespace Comet {
 
 		std::shared_ptr<Shader> m_BlueShader;
 		std::shared_ptr<VertexArray> m_SquareVA;
+
+		OrthographicCamera m_Camera;
 
 	private:
 		static Application* s_Instance;
