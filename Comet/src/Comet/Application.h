@@ -11,6 +11,7 @@
 #include "Comet/Renderer/Shader.h"
 #include "Comet/Renderer/Buffer.h"
 #include "Comet/Renderer/VertexArray.h"
+#include "Comet/Core/Timestep.h"
 
 #include "Comet/Renderer/OrthographicCamera.h"
 
@@ -35,6 +36,7 @@ namespace Comet {
 	private:
 		bool OnWindowClose(Event& e);
 
+	private:
 		std::unique_ptr<Window> m_Window;
 
 		ImGuiLayer* m_ImGuiLayer = nullptr;;
@@ -42,13 +44,7 @@ namespace Comet {
 		bool m_Running = true;
 		LayerStack m_LayerStack;
 
-		std::shared_ptr<Shader> m_Shader;
-		std::shared_ptr<VertexArray> m_VertexArray;
-
-		std::shared_ptr<Shader> m_BlueShader;
-		std::shared_ptr<VertexArray> m_SquareVA;
-
-		OrthographicCamera m_Camera;
+		float m_LastFramTime = 0.f;
 
 	private:
 		static Application* s_Instance;

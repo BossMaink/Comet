@@ -143,6 +143,7 @@
     <ClInclude Include="src\Comet.h" />
     <ClInclude Include="src\Comet\Application.h" />
     <ClInclude Include="src\Comet\Core.h" />
+    <ClInclude Include="src\Comet\Core\Timestep.h" />
     <ClInclude Include="src\Comet\EntryPoint.h" />
     <ClInclude Include="src\Comet\Events\ApplicationEvent.h" />
     <ClInclude Include="src\Comet\Events\Event.h" />

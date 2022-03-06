@@ -8,12 +8,13 @@
 
 #include "Input.h"
 
+#include <GLFW/glfw3.h>
+
 namespace Comet 
 {
 	Application* Application::s_Instance = nullptr;
 
 	Application::Application()
-		: m_Camera(-1.6f, 1.6f, -0.9f, 0.9f)
 	{
 		CM_CORE_ASSERT(!s_Instance, "Application already exists!");
 		s_Instance = this;
@@ -23,61 +24,6 @@ namespace Comet
 
 		m_ImGuiLayer = new ImGuiLayer();
 		PushOverlay(m_ImGuiLayer);
-
-		std::string vertexShaderSource = R"(
-			#version 410 core
-			layout (location = 0) in vec3 aPos;
-			layout (location = 1) in vec3 aColor;
-
-			uniform mat4 u_ViewProjection;
-
-			out vec3 outColor;
-			void main()
-			{
-				gl_Position = u_ViewProjection * vec4(aPos, 1.0f);
-				outColor = aColor;
-			}
-		)";
-
-		std::string FragmentShaderSource = R"(
-			#version 410 core
-
-			out vec4 FragColor;
-			in vec3 outColor;
-
-			void main()
-			{
-				FragColor = vec4(outColor, 1.0f);
-			} 
-		)";
-
-		m_Shader.reset(new Shader(vertexShaderSource, FragmentShaderSource));
-		m_VertexArray.reset(VertexArray::Create());
-
-		float vertices[] = {
-			 0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,
-			-0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,
-			 0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f
-		};
-
-		std::shared_ptr<VertexBuffer> vertexBuffer;
-		vertexBuffer.reset(VertexBuffer::Create(vertices, sizeof(vertices)));
-
-		
-		BufferLayout layout = {
-			{ShaderDataType::Float3, "a_Position"},
-			{ShaderDataType::Float3, "a_Color"}
-		};
-
-		vertexBuffer->SetLayout(layout);
-		m_VertexArray->AddVertexBuffer(vertexBuffer);
-
-		uint32_t indices[] = {
-			0, 1, 2
-		};
-		std::shared_ptr<IndexBuffer> indexBuffer;
-		indexBuffer.reset(IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
-		m_VertexArray->SetIndexBuffer(indexBuffer);
 	}
 
 	void Application::OnEvent(Event& e)
@@ -117,25 +63,19 @@ namespace Comet
 
 		while (m_Running)
 		{
-			RenderCommand::SetClearColor({ 0.2f, 0.3f, 0.3f, 1.0f });
-			RenderCommand::Clear();
+			float time = (float)glfwGetTime();
+			Timestep timestep = time - m_LastFramTime;
+			m_LastFramTime = time;
 
-			m_Camera.SetPosition({ 0.f, 0.f, 0.f });
-			m_Camera.SetRotation(90.f);
+			for (Layer* layer: m_LayerStack)
+			{
+				layer->OnUpdate(timestep);
+			}
 
-			Renderer::BeginScene(m_Camera);
-			Renderer::Submit(m_Shader, m_VertexArray);
-			Renderer::EndScene();
-			//glDrawArrays(GL_TRIANGLES, 0, 3);
-			//for (Layer* layer: m_LayerStack)
-			//{
-			//	layer->OnUpdate();
-			//}
-
-			//m_ImGuiLayer->Begin();
-			//for (Layer* layer : m_LayerStack)
-			//	layer->OnImGuiRender();
-			//m_ImGuiLayer->End();
+			m_ImGuiLayer->Begin();
+			for (Layer* layer : m_LayerStack)
+				layer->OnImGuiRender();
+			m_ImGuiLayer->End();
 
 			m_Window->OnUpdate();
 		}
