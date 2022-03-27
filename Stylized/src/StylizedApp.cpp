@@ -43,17 +43,17 @@ public:
 			} 
 		)";
 
-		m_Shader.reset(Comet::Shader::Create(vertexShaderSource, FragmentShaderSource));
+		m_Shader = Comet::Shader::Create("VertexPosColor", vertexShaderSource, FragmentShaderSource);
 		m_VertexArray.reset(Comet::VertexArray::Create());
 
-		m_TextureShader.reset(Comet::Shader::Create("assets/shaders/TextureShader.glsl"));
+		auto TextureShader = m_ShaderLibrary.Load("assets/shaders/TextureShader.glsl");
 		m_TextureVA.reset(Comet::VertexArray::Create());
 
 		m_Texture = Comet::Texture2D::Create("assets/textures/tile.jpg");
 		m_LogoTexture = Comet::Texture2D::Create("assets/textures/logo.png");
 
-		std::dynamic_pointer_cast<Comet::OpenGLShader>(m_TextureShader)->Bind();
-		std::dynamic_pointer_cast<Comet::OpenGLShader>(m_TextureShader)->UploadUniformInt("u_Texture", 0);
+		std::dynamic_pointer_cast<Comet::OpenGLShader>(TextureShader)->Bind();
+		std::dynamic_pointer_cast<Comet::OpenGLShader>(TextureShader)->UploadUniformInt("u_Texture", 0);
 
 		float vertices[] = {
 			-0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
@@ -130,11 +130,13 @@ public:
 			}
 		}
 
+		auto textureShader = m_ShaderLibrary.Get("TextureShader");
+
 		m_Texture->Bind();
-		Comet::Renderer::Submit(m_TextureShader, m_TextureVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
+		Comet::Renderer::Submit(textureShader, m_TextureVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
 
 		m_LogoTexture->Bind();
-		Comet::Renderer::Submit(m_TextureShader, m_TextureVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
+		Comet::Renderer::Submit(textureShader, m_TextureVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
 
 		Comet::Renderer::EndScene();
 	}
@@ -160,10 +162,10 @@ public:
 	}
 
 private:
+	Comet::ShaderLibrary m_ShaderLibrary;
 	Comet::Ref<Comet::Shader> m_Shader;
 	Comet::Ref<Comet::VertexArray> m_VertexArray;
 
-	Comet::Ref<Comet::Shader> m_TextureShader;
 	Comet::Ref<Comet::VertexArray> m_TextureVA;
 
 	Comet::Ref<Comet::Texture2D> m_Texture;
