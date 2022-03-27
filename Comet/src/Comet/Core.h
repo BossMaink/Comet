@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #ifdef CM_PLATFORM_WINDOWS
 #if CM_DYNAMIC_LINK
 	#ifdef CM_BUILD_DLL
@@ -26,3 +28,11 @@
 #define BIT(X) (1 << X)
 
 #define BIND_EVENT_FN(x, y) std::bind(&x, y, std::placeholders::_1)
+
+namespace Comet {
+	template<typename T>
+	using Scope = std::unique_ptr<T>;
+
+	template<typename T>
+	using Ref = std::shared_ptr<T>;
+}

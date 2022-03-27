@@ -16,6 +16,7 @@ IncludeDir["GLFW"] = "Comet/third-party/GLFW/include"
 IncludeDir["Glad"] = "Comet/third-party/Glad/include"
 IncludeDir["ImGui"] = "Comet/third-party/ImGui"
 IncludeDir["glm"] = "Comet/third-party/glm"
+IncludeDir["stb_image"] = "Comet/third-party/stb_image"
 
 group "Dependencies"
 	include "Comet/third-party/GLFW"
@@ -41,6 +42,8 @@ project "Comet"
 	{
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.cpp",
+		"%{prj.name}/third-party/stb_image/**.h",
+		"%{prj.name}/third-party/stb_image/**.cpp",
 		"%{prj.name}/third-party/glm/glm/**.hpp",
 		"%{prj.name}/third-party/glm/glm/**.inl"
 	}
@@ -52,7 +55,8 @@ project "Comet"
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.Glad}",
 		"%{IncludeDir.ImGui}",
-		"%{IncludeDir.glm}"
+		"%{IncludeDir.glm}",
+		"%{IncludeDir.stb_image}"
 	}
 
 	defines

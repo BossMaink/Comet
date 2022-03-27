@@ -1,6 +1,11 @@
 #include <Comet.h>
 
+#include "Platform/OpenGL/OpenGLShader.h"
+
 #include "ImGui/imgui.h"
+
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 class ExampleLayer : public Comet::Layer
 {
@@ -16,11 +21,12 @@ public:
 			layout (location = 1) in vec3 aColor;
 
 			uniform mat4 u_ViewProjection;
+			uniform mat4 u_Transform;
 
 			out vec3 outColor;
 			void main()
 			{
-				gl_Position = u_ViewProjection * vec4(aPos, 1.0f);
+				gl_Position = u_ViewProjection * u_Transform * vec4(aPos, 1.0f);
 				outColor = aColor;
 			}
 		)";
@@ -31,39 +37,87 @@ public:
 			out vec4 FragColor;
 			in vec3 outColor;
 
+			uniform vec3 u_Color;
+
 			void main()
 			{
-				FragColor = vec4(outColor, 1.0f);
+				FragColor = vec4(u_Color, 1.0f);
 			} 
 		)";
 
-		m_Shader.reset(new Comet::Shader(vertexShaderSource, FragmentShaderSource));
+		std::string TextureVertexShader = R"(
+			#version 430 core
+			layout(location = 0) in vec3 a_Position;
+			layout(location = 1) in vec2 a_TexCoord;
+
+			uniform mat4 u_ViewProjection;
+			uniform mat4 u_Transform;
+
+			out vec2 v_TexCoord;
+
+			void main()
+			{
+				v_TexCoord = a_TexCoord;
+				gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);
+			}
+		)";
+
+		std::string TextureFragmentShader = R"(
+			#version 430 core
+			
+			layout(location = 0) out vec4 color;
+
+			in vec2 v_TexCoord;
+
+			uniform sampler2D u_Texture;
+
+			void main()
+			{
+				color = texture(u_Texture, v_TexCoord);
+			}
+		)";
+
+		m_Shader.reset(Comet::Shader::Create(vertexShaderSource, FragmentShaderSource));
 		m_VertexArray.reset(Comet::VertexArray::Create());
 
+		m_TextureShader.reset(Comet::Shader::Create(TextureVertexShader, TextureFragmentShader));
+		m_TextureVA.reset(Comet::VertexArray::Create());
+
+		m_Texture = Comet::Texture2D::Create("assets/textures/tile.jpg");
+
+		std::dynamic_pointer_cast<Comet::OpenGLShader>(m_TextureShader)->Bind();
+		std::dynamic_pointer_cast<Comet::OpenGLShader>(m_TextureShader)->UploadUniformInt("u_Texture", 0);
+
 		float vertices[] = {
-			 0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,
-			-0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,
-			 0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f
+			-0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
+			 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+			 0.5f,  0.5f, 0.0f, 1.0f, 1.0f,
+			-0.5f,  0.5f, 0.0f, 0.0f, 1.0f
 		};
 
-		std::shared_ptr<Comet::VertexBuffer> vertexBuffer;
+		Comet::Ref<Comet::VertexBuffer> vertexBuffer;
 		vertexBuffer.reset(Comet::VertexBuffer::Create(vertices, sizeof(vertices)));
 
 
 		Comet::BufferLayout layout = {
 			{Comet::ShaderDataType::Float3, "a_Position"},
-			{Comet::ShaderDataType::Float3, "a_Color"}
+			{Comet::ShaderDataType::Float2, "a_TexCoord"}
 		};
 
 		vertexBuffer->SetLayout(layout);
 		m_VertexArray->AddVertexBuffer(vertexBuffer);
+		m_TextureVA->AddVertexBuffer(vertexBuffer);
 
 		uint32_t indices[] = {
-			0, 1, 2
+			0, 1, 2, 2, 3, 0
 		};
-		std::shared_ptr<Comet::IndexBuffer> indexBuffer;
+		Comet::Ref<Comet::IndexBuffer> indexBuffer;
 		indexBuffer.reset(Comet::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
 		m_VertexArray->SetIndexBuffer(indexBuffer);
+		m_TextureVA->SetIndexBuffer(indexBuffer);
+
+		std::dynamic_pointer_cast<Comet::OpenGLShader>(m_Shader)->Bind();
+		std::dynamic_pointer_cast<Comet::OpenGLShader>(m_Shader)->UploadUniformFloat3("u_Color", m_SquareColor);
 	}
 
 	void OnUpdate(Comet::Timestep ts) override
@@ -90,7 +144,28 @@ public:
 		m_Camera.SetRotation(m_CameraRotation);
 
 		Comet::Renderer::BeginScene(m_Camera);
-		Comet::Renderer::Submit(m_Shader, m_VertexArray);
+		//Comet::Renderer::Submit(m_Shader, m_VertexArray);
+
+		glm::mat4 scale = glm::scale(glm::mat4(1.f), glm::vec3(0.1f));
+
+
+		std::dynamic_pointer_cast<Comet::OpenGLShader>(m_Shader)->Bind();
+		std::dynamic_pointer_cast<Comet::OpenGLShader>(m_Shader)->UploadUniformFloat3("u_Color", m_SquareColor);
+	
+
+		for (int y = 0; y < 20; ++y)
+		{
+			for (int x = 0; x < 20; ++x)
+			{
+				glm::vec3 pos(x * 0.11f, y * 0.11f, 0.0f);
+				glm::mat4 transform = glm::translate(glm::mat4(1.f), pos) * scale;
+				Comet::Renderer::Submit(m_Shader, m_VertexArray, transform);
+			}
+		}
+
+		m_Texture->Bind();
+		Comet::Renderer::Submit(m_TextureShader, m_TextureVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
+
 		Comet::Renderer::EndScene();
 	}
 
@@ -109,15 +184,19 @@ public:
 
 	virtual void OnImGuiRender() override
 	{
-
+		ImGui::Begin("Settings");
+		ImGui::ColorEdit3("Square Color", glm::value_ptr(m_SquareColor));
+		ImGui::End();
 	}
 
 private:
-	std::shared_ptr<Comet::Shader> m_Shader;
-	std::shared_ptr<Comet::VertexArray> m_VertexArray;
+	Comet::Ref<Comet::Shader> m_Shader;
+	Comet::Ref<Comet::VertexArray> m_VertexArray;
 
-	std::shared_ptr<Comet::Shader> m_BlueShader;
-	std::shared_ptr<Comet::VertexArray> m_SquareVA;
+	Comet::Ref<Comet::Shader> m_TextureShader;
+	Comet::Ref<Comet::VertexArray> m_TextureVA;
+
+	Comet::Ref<Comet::Texture2D> m_Texture;
 
 	Comet::OrthographicCamera m_Camera;
 	glm::vec3 m_CameraPosition;
@@ -125,6 +204,8 @@ private:
 
 	float m_CameraRotation = 0.f;
 	float m_CameraRotationSpeed = 180.f;
+
+	glm::vec3 m_SquareColor = { 0.2f, 0.3f, 0.8f };
 };
 
 class Stylized : public Comet::Application
