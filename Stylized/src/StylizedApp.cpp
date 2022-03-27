@@ -84,6 +84,7 @@ public:
 		m_TextureVA.reset(Comet::VertexArray::Create());
 
 		m_Texture = Comet::Texture2D::Create("assets/textures/tile.jpg");
+		m_LogoTexture = Comet::Texture2D::Create("assets/textures/logo.png");
 
 		std::dynamic_pointer_cast<Comet::OpenGLShader>(m_TextureShader)->Bind();
 		std::dynamic_pointer_cast<Comet::OpenGLShader>(m_TextureShader)->UploadUniformInt("u_Texture", 0);
@@ -166,6 +167,9 @@ public:
 		m_Texture->Bind();
 		Comet::Renderer::Submit(m_TextureShader, m_TextureVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
 
+		m_LogoTexture->Bind();
+		Comet::Renderer::Submit(m_TextureShader, m_TextureVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
+
 		Comet::Renderer::EndScene();
 	}
 
@@ -197,6 +201,7 @@ private:
 	Comet::Ref<Comet::VertexArray> m_TextureVA;
 
 	Comet::Ref<Comet::Texture2D> m_Texture;
+	Comet::Ref<Comet::Texture2D> m_LogoTexture;
 
 	Comet::OrthographicCamera m_Camera;
 	glm::vec3 m_CameraPosition;
